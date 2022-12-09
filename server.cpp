@@ -1,7 +1,5 @@
 #include "server.h"
 
-#define DEBUG
-
 Server::Server()
 {
     setup(DEFAULT_PORT);
@@ -76,9 +74,9 @@ void Server::listenSocket()
     std::cout << "[SERVER] listen starting\n";
     #endif // DEBUG
     int ret = listen(server_fd, 3);
-    #ifndef DEBUG
+    #ifdef DEBUG
     printf("[SERVER] listen() return value: %d.\n", ret);
-    #endif // !DEBUG
+    #endif // DEBUG
     if (ret < 0)
     {
         perror("listen() failed");
@@ -109,9 +107,9 @@ void Server::newConnection()
     {
         FD_SET(new_socket, &masterfds);
 
-        if (server_fd > max_sd)
+        if (new_socket > max_sd)
         {
-            max_sd = server_fd;
+            max_sd = new_socket;
             #ifdef DEBUG
             std::cout << "[SERVER] incrementing max_sd to " << max_sd << std::endl;
             #endif // DEBUG
@@ -129,6 +127,7 @@ void Server::recvInputFromConnection(int fd)
     {
         if (0 == checkrecv)
         {
+            printf("[SERVER] [DISCONNECT] connection '%d' disconnected\n", fd);
             close(fd);
             FD_CLR(fd, &masterfds);
             return;
@@ -141,9 +140,9 @@ void Server::recvInputFromConnection(int fd)
         return;
     }
     #ifdef DEBUG
-    printf("[SERVER] [RECV] REcieved '%s' from cluent.\n", buffer);
+    printf("[SERVER] [RECV] Recieved '%s' from client.\n", buffer);
     #endif // DEBUG
-    printf("%s", buffer);
+    printf("%s\n", buffer);
     bzero(&buffer, BUFFER_SIZE);
 }
 
@@ -151,7 +150,7 @@ void Server::loop()
 {
     tempfds = masterfds;
     #ifdef DEBUG
-    printf("[SERVER] max_sd = '%hu' \n", max_sd);
+    printf("[SERVER] max sd = '%hu' \n", max_sd);
     std::cout << "[SERVER] calling select()\n";
     #endif // DEBUG
     int sel = select(max_sd + 1, &tempfds, NULL, NULL, NULL);
