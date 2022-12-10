@@ -1,6 +1,6 @@
 /*
-* File:   server.h
-* author M0rga-n
+* File: server.h
+* Author: M0rga-n
 *
 * Created on December 9, 2022, 11:16 AM
 */
@@ -28,7 +28,7 @@ public:
     Server(); //Start server
     Server(int port); //Start server with custom port
 
-    ~Server();
+    ~Server(); //Destroy server
 
     void init();
     void shutdown();
@@ -46,18 +46,17 @@ private:
 
     //server adderess details
     struct sockaddr_in servaddr;
+    struct sockaddr_storage client_addr;
 
     char buffer[BUFFER_SIZE];
 
     //Prototypes
     void setup(int port);
-    void recvInputFromConnection(int fd);
     void initSocket();
     void bindSocket();
     void listenSocket();
     void newConnection();
-
-    struct sockaddr_storage client_addr;
+    void recvInputFromConnection(int fd);
 };
 
 #endif // !SERVER_H

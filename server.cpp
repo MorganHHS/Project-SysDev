@@ -1,8 +1,10 @@
 #include "server.h"
 
+// define DEBUG for debug infomation
+
 Server::Server()
 {
-    setup(DEFAULT_PORT);
+    setup(DEFAULT_PORT);  //Constructor
 }
 
 Server::Server(int port)
@@ -13,12 +15,12 @@ Server::Server(int port)
 Server::~Server()
 {
     #ifdef DEBUG
-
+    printf("[SERVER] [DESTRUCTOR] Destroying Server.")
     #endif
     close(server_fd);
 }
 
-void Server::setup(int port)
+void Server::setup(int port)//Create an endpoint for communication.
 {
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     {
@@ -34,10 +36,10 @@ void Server::setup(int port)
     servaddr.sin_port = htons(port);
 }
 
-void Server::initSocket()
+void Server::initSocket()//Set the socket options
 {
     #ifdef DEBUG
-
+    printf("[SERVER] Initiating socket.\n");
     #endif
     int opt = 1;
     int ret = setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
@@ -51,7 +53,7 @@ void Server::initSocket()
     }
 }
 
-void Server::bindSocket()
+void Server::bindSocket()//Bind a name to a socket.
 {
     #ifdef DEBUG
     std::cout << "[SERVER] binding\n";
@@ -68,7 +70,7 @@ void Server::bindSocket()
     max_sd = server_fd;
 }
 
-void Server::listenSocket()
+void Server::listenSocket()//Listen for socket communication and limit que of icoming connections.
 {
     #ifdef DEBUG
     std::cout << "[SERVER] listen starting\n";
@@ -83,7 +85,7 @@ void Server::listenSocket()
     }
 }
 
-void Server::shutdown()
+void Server::shutdown()//Close the file descriptor for the socket.
 {
     int ret = close(server_fd);
     #ifdef DEBUG
@@ -91,7 +93,7 @@ void Server::shutdown()
     #endif // DEBUG
 }
 
-void Server::newConnection()
+void Server::newConnection()//Add new connection on the socket.
 {
     #ifdef DEBUG
     std::cout << "[SERVER] [CONNECTION] new connection\n";
@@ -120,7 +122,7 @@ void Server::newConnection()
     }
 }
 
-void Server::recvInputFromConnection(int fd)
+void Server::recvInputFromConnection(int fd)//Return buffer from connection.
 {
     int checkrecv = recv(fd, buffer, BUFFER_SIZE, 0);
     if (checkrecv <= 0)
@@ -146,7 +148,7 @@ void Server::recvInputFromConnection(int fd)
     bzero(&buffer, BUFFER_SIZE);
 }
 
-void Server::loop()
+void Server::loop()//Check for change on socket connections
 {
     tempfds = masterfds;
     #ifdef DEBUG
@@ -175,7 +177,7 @@ void Server::loop()
     }
 }
 
-void Server::init()
+void Server::init()//initialise socket
 {
     initSocket();
     bindSocket();
