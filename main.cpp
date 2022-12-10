@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "server.h"
+#include "server/server.h"
 
 Server server;
 
