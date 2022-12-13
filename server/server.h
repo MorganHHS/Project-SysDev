@@ -34,6 +34,10 @@ public:
     void shutdown();
     void loop();
 
+    void onConnect(void (*ncc)(uint16_t fd));
+    void onInput(void (*rc)(uint16_t fd, char *buffer));
+    void onDisconnect(void (*dc)(uint16_t fd));
+
 private:
 
     fd_set masterfds;
@@ -49,6 +53,12 @@ private:
     struct sockaddr_storage client_addr;
 
     char buffer[BUFFER_SIZE];
+
+    //Callbacks
+    void (*newConnection) (uint16_t fd);
+    void (*newConnectionCallback) (uint16_t fd);
+    void (*disconnected) (uint16_t fd);
+    void (*receive) (uint16_t fd, char *buffer);
 
     //Prototypes
     void setup(int port);

@@ -120,6 +120,7 @@ void Server::newConnection()//Add new connection on the socket.
         printf("[SERVER] New connection on socket '%d'.\n", new_socket);
         #endif // DEBUG
     }
+    newConnectionC(new_socket);
 }
 
 void Server::recvInputFromConnection(int fd)//Return buffer from connection.
@@ -129,7 +130,10 @@ void Server::recvInputFromConnection(int fd)//Return buffer from connection.
     {
         if (0 == checkrecv)
         {
+            #ifdef DEBUG
             printf("[SERVER] [DISCONNECT] connection '%d' disconnected\n", fd);
+            #endif // DEBUG
+            disconnectedC(fd);
             close(fd);
             FD_CLR(fd, &masterfds);
             return;
@@ -144,7 +148,8 @@ void Server::recvInputFromConnection(int fd)//Return buffer from connection.
     #ifdef DEBUG
     printf("[SERVER] [RECV] Recieved '%s' from client.\n", buffer);
     #endif // DEBUG
-    printf("%s\n", buffer);
+    receiveC(fd, buffer);
+    //printf("%s\n", buffer);
     bzero(&buffer, BUFFER_SIZE);
 }
 
@@ -182,4 +187,19 @@ void Server::init()//initialise socket
     initSocket();
     bindSocket();
     listenSocket();
+}
+
+void Server::onConnect(void(*c)(uint16_t))
+{
+    newConnectionC = c;
+}
+
+void Server::onDisconnect(void(*dc)(uint16_t))
+{
+    disconnectedC = dc;
+}
+
+void Server::onInput(void(*in)(uint16_t, char *buffer))
+{
+    receiveC = in;
 }
