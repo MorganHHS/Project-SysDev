@@ -55,10 +55,9 @@ private:
     char buffer[BUFFER_SIZE];
 
     //Callbacks
-    void (*newConnection) (uint16_t fd);
-    void (*newConnectionCallback) (uint16_t fd);
-    void (*disconnected) (uint16_t fd);
-    void (*receive) (uint16_t fd, char *buffer);
+    void (*newConnectionC) (uint16_t fd);
+    void (*disconnectedC) (uint16_t fd);
+    void (*receiveC) (uint16_t fd, char *buffer);
 
     //Prototypes
     void setup(int port);

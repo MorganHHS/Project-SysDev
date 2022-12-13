@@ -15,7 +15,7 @@ Server::Server(int port)
 Server::~Server()
 {
     #ifdef DEBUG
-    printf("[SERVER] [DESTRUCTOR] Destroying Server.")
+    printf("[SERVER] [DESTRUCTOR] Destroying Server.");
     #endif
     close(server_fd);
 }

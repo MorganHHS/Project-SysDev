@@ -1,11 +1,15 @@
 #include <iostream>
 
 #include "server/server.h"
+#include "controller/controller.hpp"
 
 Server server;
 
 int main(int argc, char const *argv[])
 {
+    server.onConnect(&Controller::handleServerConnection);
+    server.onDisconnect(&Controller::handleServerDisconnect);
+    server.onInput(&Controller::handleServerInput);
     server.init();
 
     while(true)
