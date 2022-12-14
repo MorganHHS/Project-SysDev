@@ -15,5 +15,8 @@ void Controller::handleServerDisconnect(uint16_t fd)
 
 void Controller::handleServerInput(uint16_t fd, char *buffer)
 {
-    std::cout << buffer << std::endl;
+    std::string s = buffer;
+    std::cout << "Received input from " << fd << std::endl;
+    size_t pos = s.find_first_of(' ');
+
 }
