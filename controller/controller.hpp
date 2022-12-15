@@ -11,4 +11,4 @@ namespace Controller
     void handleServerInput(uint16_t fd, char *buffer);
 }
 
-#endif // !CONTROLLER_H
+#endif //
