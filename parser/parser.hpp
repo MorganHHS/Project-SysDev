@@ -8,8 +8,7 @@ class Parser
 {
     public:
         std::vector<std::string> values;
-        void prase(const char *buffer);
-       
+        void parse(char *buffer);
 };
 
 #endif // !PARSER_H
