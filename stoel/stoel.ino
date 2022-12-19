@@ -4,14 +4,14 @@
 
 
 #ifndef WIFISSID
-#define WIFISSID "Lab001" 
-#define WIFIPASS "Lab001WiFi"
+#define WIFISSID "banaantje" 
+#define WIFIPASS "BananenZijnGoed!"
 #endif
 
 
 const char* ssid     = WIFISSID;
 const char* password = WIFIPASS;
-const char* host = "145.52.126.192";
+const char* host = "192.168.4.1";
 const uint16_t port = 8080;
 
 void setup() 
@@ -71,7 +71,12 @@ return a;
 
 }
 
+
+
+
 void loop() {
+
+  
   // wifi verbinden lmao
   Serial.print("connecting to ");
   Serial.print(host);
@@ -86,13 +91,12 @@ void loop() {
     return;
   }
 
+
+  while(1){
   Wire.beginTransmission(0x38);
   Wire.write(byte(0x03));          
   Wire.write(byte(0x0F));         
   Wire.endTransmission();
-  while(1){
-
-
 
   
   while (client.available()) {
@@ -100,12 +104,13 @@ void loop() {
     Serial.print(ch);
   }
 
-  Serial.println(inputs());
+  
   
   if ((inputs()) > 0 ){
+    Serial.println(inputs());
     // Verstuurt een string naar de server.
-    Serial.println("data versturen naar raspberry pi");
     if (client.connected()) {
+      Serial.println("IK HEB DATA VERSTUURD NAAR DE PI");
       client.print("knop");
       delay(100);
       
@@ -114,8 +119,10 @@ void loop() {
         char ch = static_cast<char>(client.read());
         if (ch == '5'){
           TrillenAan();
-          delay(10000);
+          Serial.println("IK TRIL NU");
+          delay(2500);
           TrillenUit();
+          Serial.println("IK STOP MET TRILLEN");
       }
         Serial.print(ch);
       }
@@ -123,10 +130,12 @@ void loop() {
     }
     //client.stop();
     //break;    
-  }
-  
+    
   // Close the connection
 
+  }
 
   }
+
+}
 
