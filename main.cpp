@@ -12,6 +12,7 @@ void addHandlers()
 }
 int main(int argc, char const *argv[])
 {
+    addHandlers();
     server.onConnect(&Controller::handleServerConnection);
     server.onDisconnect(&Controller::handleServerDisconnect);
     server.onInput(&Controller::handleServerInput);

@@ -40,7 +40,7 @@ void Controller::handleServerInput(uint16_t fd, char *buffer)
     {
         std::cout << "handler at: '" << h << "'" << std::endl;
 
-        h(&prs.values); 
+        h(&prs.values, fd); 
     } else
     {
         std::cerr << "The action was not found: " << key << std::endl;
