@@ -1,6 +1,7 @@
 #ifndef GET_ACTION_H
 #define GET_ACTION_H
 
+#include <iostream>
 #include <map>
 
 template<class K, class V>

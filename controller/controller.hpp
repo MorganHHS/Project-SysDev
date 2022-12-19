@@ -8,7 +8,7 @@
 
 namespace Controller
 {
-    typedef void (*handler)(std::vector<std::string> *TokenArray);
+    typedef void (*handler)(std::vector<std::string> *args, uint16_t fd);
 
     void handleServerConnection(uint16_t fd);
     void handleServerDisconnect(uint16_t fd);

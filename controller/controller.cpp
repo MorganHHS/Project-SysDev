@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstring>
 #include <map>
+#include <sys/socket.h>
 
 #include "controller.hpp"
 #include "../parser/parser.hpp"
@@ -15,7 +16,7 @@ void Controller::handleServerConnection(uint16_t fd)
 }
 
 void Controller::handleServerDisconnect(uint16_t fd)
-{
+{  
     std::cout << "Controller: got disconnect from " << fd << std::endl;
 }
 
