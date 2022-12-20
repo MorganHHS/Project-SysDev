@@ -8,7 +8,7 @@ Server server;
 
 void addHandlers()
 {
-    Controller::addHandler("knop",Actions::deurOpen);
+    Controller::addHandler("knop",Deur::deurOpen);
 }
 int main(int argc, char const *argv[])
 {
