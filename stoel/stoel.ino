@@ -1,4 +1,4 @@
-#include <Servo.h> 
+  #include <Servo.h> 
 #include <Wire.h>
 #include <ESP8266WiFi.h>
 
@@ -133,16 +133,16 @@ if ((DrukSensor() > 400)){
     if (client.connected()) {
       Serial.println("IK HEB DATA VERSTUURD NAAR DE PI");
       client.print("zitten");
-      delay(100);
+while(!client.available());
  while (client.available()) {
         char ch = static_cast<char>(client.read());
         if (ch == '6'){
           while(DrukSensor() > 400){
-          delay(8000);
           Serial.println("IK TRIL NU");
           TrillenAan();
           delay(2000);
           TrillenUit();
+          delay(8000);
           Serial.println("Tril cyclus compleet begin opniuew");
 
         }
@@ -172,7 +172,6 @@ if ((DrukSensor() > 400)){
           TrillenUit();
           Serial.println("IK STOP MET TRILLEN");
       }
-        Serial.println(ch);
       }
       
     }
