@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-namespace Actions
+namespace Deur
 {
     void deurOpen(std::vector<std::string> *vals, uint16_t fd);
 }
