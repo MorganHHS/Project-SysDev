@@ -7,5 +7,7 @@
 namespace Deur
 {
     void deurOpen(std::vector<std::string> *vals, uint16_t fd);
+    void brand(std::vector<std::string> *vals, uint16_t fd);
+    void geenBrand(std::vector<std::string> *vals, uint16_t fd);
 }
 #endif // !ACTIONS_H

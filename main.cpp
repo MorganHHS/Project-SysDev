@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "server/server.h"
+#include "server/server.hpp"
 #include "controller/controller.hpp"
 #include "controller/actions.hpp"
 
@@ -8,7 +8,9 @@ Server server;
 
 void addHandlers()
 {
-    Controller::addHandler("knop",Deur::deurOpen);
+    Controller::addHandler("deurKnop1",Deur::deurOpen);
+    Controller::addHandler("brand", Deur::brand);
+    Controller::addHandler("geenBrand", Deur::geenBrand);
 }
 int main(int argc, char const *argv[])
 {
