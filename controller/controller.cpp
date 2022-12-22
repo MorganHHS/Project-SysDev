@@ -38,7 +38,7 @@ void Controller::handleServerInput(uint16_t fd, char *buffer)
     Controller::handler h = NULL;
     if(get_action<std::string, Controller::handler>(&handlers, key, &h))
     {
-        std::cout << "handler at: '" << h << "'" << std::endl;
+        std::cout << "handler at: '" << h << "' Running action: '" << key << "'" << std::endl;
 
         h(&prs.values, fd); 
     } else
