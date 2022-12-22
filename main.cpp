@@ -22,7 +22,7 @@ int main(int argc, char const *argv[])
 
     while(true)
     {
-        server.loop();
+        server.checkSocket();
     }
     return 0;
 }
