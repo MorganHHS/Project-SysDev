@@ -24,7 +24,7 @@ const uint16_t port = 6969;        // Socket Port number
 
 void ledOn();
 void ledOff();
-
+int leesBeweging();
 
 // Define the array of leds
 CRGB leds[NUM_LEDS];
@@ -38,14 +38,6 @@ void setup() {
 }
 
 
-unsigned int inputs() {  //Function to read button value
-  Wire.beginTransmission(0x38);
-  Wire.write(byte(0x00));
-  Wire.endTransmission();
-  Wire.requestFrom(0x38, 1);
-  unsigned int a = Wire.read() & 0x01;
-  return a;
-}
 
 void loop(void) {
 
@@ -55,19 +47,19 @@ void loop(void) {
   delay(500);
 
   while (1) {
-    Wire.beginTransmission(0x38);
-    Wire.write(byte(0x03));
-    Wire.write(byte(0x0F));
-    Wire.endTransmission();
 
-    Serial.println(inputs());
+    int beweging = leesBeweging();
 
-  Wire.beginTransmission(0x36);
-  Wire.write(byte(0xA2));          
-  Wire.write(byte(0x03));  
-  Wire.endTransmission(); 
     delay(500);
+
+    if(beweging == 1) {
+      ledOn();
+      delay(1000);
+      ledOff();
+      delay(500);
+    }
   }
+
 }
 
 void ledOn() {
@@ -80,4 +72,19 @@ void ledOff() {
 
   leds[0] = CRGB::Black;
   FastLED.show();
+}
+
+int leesBeweging() {
+
+  Wire.beginTransmission(0x38);
+  Wire.write(byte(0x00));
+  Wire.endTransmission();
+  Wire.requestFrom(0x38, 1);
+  unsigned int inputs = Wire.read();
+  Serial.print("Digital in: ");
+  Serial.println(inputs & 0x01);
+  return inputs & 0x01;
+
+
+
 }
