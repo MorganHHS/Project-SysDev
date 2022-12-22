@@ -1,4 +1,5 @@
-#include "server.h"
+#include "server.hpp"
+#include <sys/socket.h>
 
 // define DEBUG for debug infomation
 
@@ -153,7 +154,7 @@ void Server::recvInputFromConnection(int fd)//Return buffer from connection.
     bzero(&buffer, BUFFER_SIZE);
 }
 
-void Server::loop()//Check for change on socket connections
+void Server::checkSocket()//Check for change on socket connections
 {
     tempfds = masterfds;
     #ifdef DEBUG
