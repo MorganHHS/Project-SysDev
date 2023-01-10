@@ -17,6 +17,7 @@ void brand(std::vector<std::string> *vals, uint16_t fd)
 }
 
 void geenBrand(std::vector<std::string> *vals, uint16_t fd)
+
 {
     const char* message = "geenbrand";
     send(fd, message, strlen(message), 0);
