@@ -25,24 +25,70 @@ bool hulp = false;
 unsigned int inputs = 0;
 unsigned int outputs = 0;
 
-void lampAanzetten (){
+void lampAanzetten (){ //zet de lamp/led uit
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x01));            
   Wire.write(byte(1<<4));            
   Wire.endTransmission(); 
 }
-void lampUitzetten (){
+void lampUitzetten (){ //zet de lamp/led uit
   Wire.beginTransmission(0x38); 
   Wire.write(byte(0x01));            
   Wire.write(byte(1<<8));            
   Wire.endTransmission();
 }
-void notificatie(){
+void notificatie(){ //lamp/led laten knipperen voor hulpsignaal
   if(hulp) {
   lampAanzetten();
   delay(500);
   lampUitzetten();
   }
+}
+void indrukTijd(WiFiClient* client){ //bepaald/berekend de tijd hoelang de knop is ingedrukt en stuurt dat naar de server
+  statusKnop = (inputs&0x01); 
+    if(statusKnop != laatsteStatusKnop) {
+      //De knop is ingedrukt
+      if (statusKnop == HIGH) {
+         beginIndrukking = millis();
+      }
+      //De knop is losgelaten
+      else {
+        eindIndrukking = millis();
+        tijdIngedrukt = eindIndrukking - beginIndrukking;
+        if (tijdIngedrukt >= 100UL && tijdIngedrukt < 3900UL) {
+          // Verstuurt een string naar de server.
+          Serial.println("data versturen naar raspberry pi");
+          if (client->connected()) {
+              client->print("knop");
+              delay(100);
+              } 
+        }
+        if (tijdIngedrukt >= 4000UL) {
+          // Verstuurt een string naar de server.
+          Serial.println("data versturen naar raspberry pi");
+          if (client->connected()) {
+              client->print("knop4s");
+              delay(100);
+          }
+        }
+      }
+    }
+    laatsteStatusKnop = statusKnop;
+}
+void uitvoerenActie(WiFiClient* client){
+  // Lezen wat de server verstuurd en juiste actie uitvoeren. 
+      while (client->available()) {
+        char ch = static_cast<char>(client->read());
+        if (ch == '7'){
+          lampAanzetten();
+        }
+        if (ch == '8'){
+          lampUitzetten();
+        }
+        if (ch == '9'){
+          hulp = !hulp;
+        }
+      }
 }
 unsigned int leesInputs() {
   //Read PCA9554 inputs (IO40-IO3)
@@ -83,6 +129,11 @@ void setup()
   Serial.println("WiFi connected");
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
+  //IO0-IO3 as input, IO4-IO7 as output.
+  Wire.beginTransmission(0x38);
+  Wire.write(byte(0x03));          
+  Wire.write(byte(0x0F));         
+  Wire.endTransmission();
   lampUitzetten();
 }
 void loop() {
@@ -99,63 +150,12 @@ void loop() {
     return;
   }
   while(1){
-  //Config PCA9554
-  //Inside loop for debugging purpose (hot plugging wemos module into i/o board). 
-  //IO0-IO3 as input, IO4-IO7 as output.
-  Wire.beginTransmission(0x38);
-  Wire.write(byte(0x03));          
-  Wire.write(byte(0x0F));         
-  Wire.endTransmission();
   inputs = leesInputs();
   stuurAnaloog(&client);
   notificatie(); 
-  statusKnop = (inputs&0x01);
-    if(statusKnop != laatsteStatusKnop) {
-      //De knop is ingedrukt
-      if (statusKnop == HIGH) {
-         beginIndrukking = millis();
-      }
-      //De knop is losgelaten
-      else {
-        eindIndrukking = millis();
-        tijdIngedrukt = eindIndrukking - beginIndrukking;
-        if (tijdIngedrukt >= 100UL && tijdIngedrukt < 3900UL) {
-          // Verstuurt een string naar de server.
-          Serial.println("data versturen naar raspberry pi");
-          if (client.connected()) {
-              client.print("knop");
-              delay(100);
-              } 
-        }
-        if (tijdIngedrukt >= 4000UL) {
-          // Verstuurt een string naar de server.
-          Serial.println("data versturen naar raspberry pi");
-          if (client.connected()) {
-              client.print("knop4s");
-              delay(100);
-          }
-        }
-      }
-    }
-    laatsteStatusKnop = statusKnop;
-      
-      // Lezen wat de server verstuurd en printen. 
-      while (client.available()) {
-        char ch = static_cast<char>(client.read());
-        if (ch == '7'){
-          lampAanzetten();
-        }
-        if (ch == '8'){
-          lampUitzetten();
-        }
-        if (ch == '9'){
-          hulp = !hulp;
-        }
-        Serial.println("data ontvangen van raspberry pi");
-        Serial.print(ch);
-        //ch = '0';
-      }
-      delay(100);
+  indrukTijd(&client);
+  uitvoerenActie(&client);       
+  delay(100);
     //client.stop();
     //break;    
   
