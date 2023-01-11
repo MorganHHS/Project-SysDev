@@ -10,13 +10,13 @@ void Deur::deurOpen(std::vector<std::string> *vals, uint16_t fd)
     send(fd, message, strlen(message), 0);
 }
 
-void brand(std::vector<std::string> *vals, uint16_t fd)
+void Deur::brand(std::vector<std::string> *vals, uint16_t fd)
 { 
     const char* message = "brand";
     send(fd, message, strlen(message), 0);
 }
 
-void geenBrand(std::vector<std::string> *vals, uint16_t fd)
+void Deur::geenBrand(std::vector<std::string> *vals, uint16_t fd)
 
 {
     const char* message = "geenbrand";
