@@ -166,5 +166,28 @@ void loop() {
         }
       }
     }
+    if (client.available()) { // Lezen wat de server verstuurd en printen.
+      char ch = static_cast<const char>(client.read());
+      Serial.print("Pi sent:");
+      Serial.print(ch);
+      Serial.print("\n");
+
+      if (ch == '7') {
+        TrillenAan();
+        Serial.println("Vibrating");
+      }
+      if (ch == '8') {
+        TrillenUit();
+        Serial.println("Stop Vibrating");
+      }
+      if (ch == '9') {
+      LedAan();
+      Serial.println("Turn Led on");
+      }
+      ch = '0';
+    }
+
+
+
   }
 }
