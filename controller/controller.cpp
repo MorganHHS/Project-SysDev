@@ -22,7 +22,7 @@ void Controller::handleServerDisconnect(uint16_t fd)
 
 void Controller::handleServerInput(uint16_t fd, char *buffer)
 {
-    std::cout << "Got input '" << buffer << "' from" << fd << std::endl;
+    std::cout << "Got input '" << buffer << "' from" << fd << ".\n";
     prs.parse(buffer);
 
     std::string key;
@@ -38,7 +38,7 @@ void Controller::handleServerInput(uint16_t fd, char *buffer)
     Controller::handler h = NULL;
     if(get_action<std::string, Controller::handler>(&handlers, key, &h))
     {
-        std::cout << "handler at: '" << h << "'" << std::endl;
+        std::cout << "handler at: '" << h << "' Running action: '" << key << "'" << std::endl;
 
         h(&prs.values, fd); 
     } else
