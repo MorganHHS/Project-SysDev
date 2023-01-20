@@ -8,9 +8,14 @@ Server server;
 
 void addHandlers()
 {
-    Controller::addHandler("deurKnop1",Deur::deurOpen);
-    Controller::addHandler("brand", Deur::brand);
-    Controller::addHandler("geenBrand", Deur::geenBrand);
+    Controller::addHandler("setBed", Functions::setBed);
+    Controller::addHandler("setVenster", Functions::setVenster);
+    Controller::addHandler("setStoel", Functions::setStoel);
+    Controller::addHandler("setDeur", Functions::setDeur);
+    Controller::addHandler("setZuil", Functions::setZuil);
+    Controller::addHandler("setSchemerlamp", Functions::setSchemerlamp);
+    Controller::addHandler("deur", Functions::deur);
+
 }
 int main(int argc, char const *argv[])
 {
@@ -19,7 +24,6 @@ int main(int argc, char const *argv[])
     server.onDisconnect(&Controller::handleServerDisconnect);
     server.onInput(&Controller::handleServerInput);
     server.init();
-
     while(true)
     {
         server.checkSocket();

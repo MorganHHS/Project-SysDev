@@ -1,5 +1,4 @@
 #include "server.hpp"
-#include <sys/socket.h>
 
 // define DEBUG for debug infomation
 
