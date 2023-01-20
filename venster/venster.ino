@@ -1,111 +1,189 @@
-// Betreft User Stories voor het Venster en de LED Strip.
-
+#include <Servo.h>
 #include <Wire.h>
-#include <FastLED.h> // Library voor de LED strip, als deze library correct is nog wel even downloaden.
+#include <ESP8266WiFi.h>
+#include <FastLED.h>
+
+#ifndef WIFISSID
+#define WIFISSID "banaantje"         //SSID of the WIFI Accesspoint
+#define WIFIPASS "BananenZijnGoed!"  //Password of the WIFI Accesspoint
+#endif
+
+const char* ssid = WIFISSID;
+const char* password = WIFIPASS;
+const char* host = "192.168.4.1";  //Server Host IP
+const uint16_t port = 8080;        // Socket Port number
 
 #define LED_PIN D5 // Defines voor de LED strip.
 #define NUM_LEDS 3
 CRGB leds[NUM_LEDS];
 
+bool brand;
 
-void VensterOmhoog(); // Light mode
-void VensterOmlaag(); //Dark mode
-void ToggleVenster();
-void RegelVenster();
-void RegelLcdPanel();
-unsigned int LdrRead();
-unsigned int PotRead(); // Dit moet de functie voor de potentiometer worden.
-
-unsigned int outputs = 0;
-
-void setup()
+void setup() 
 {
-  Wire.begin();
-  Serial.begin(115200);
-
-  // Set-up voor config MAX11647, Er moet geschreven worden naar de configuratie byte en de set-up byte. (Ik weet niet of dit nog steeds nodig is.)
-  Wire.beginTransmission(0x36);
-  Wire.write(byte(0xA2));
-  Wire.write(byte(0x03));
-  Wire.endTransmission();
-
-  Wire.beginTransmission(0x38);
-  Wire.write(byte(0x03)); // Initialiseert 0 t/m 3 op input.
-  Wire.write(byte(0x0F)); // Initialiseert 4 t/m 7 op output.
-  Wire.endTransmission();
-
-  FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS); // Setup voor de LED strip.
-  FastLED.setMaxPowerInVoltsAndMilliamps(5, 500);
-  FastLED.clear();
-  FastLED.show();
+  Serial.begin(115200);  // baudrate instellen en serieel starten
+  Wire.begin();          // I2C communicatie starten
+  wifiVerbinden();       // wifi verbinden functie
+  ledSetup();
 }
 
-void loop()
+void loop() 
 {
-  //delay(500); // Delay is voor printsnelheid, maar vertraagt ook het RegelVenster().
-  Serial.print("Analog output ldrRead:");
-  Serial.println(LdrRead());
-  Serial.print("Analog output PotRead:");
-  Serial.println(PotRead());
-
-  RegelVenster();
-  RegelLcdPanel();
-}
-
-void RegelVenster()
-{
-  if (LdrRead() > 500)
-    VensterOmlaag();
-  else
-    VensterOmhoog();
-}
-
-void RegelLcdPanel()
-{
- /* if (PotRead() > 0 && PotRead() <= 300) // Dit is voor het laten veranderen van kleur aan de hand van de potmeter, van rood naar groen naar blauw.
+  brand = false;
+  twiSetup();
+  WiFiClient client = verbindenPi();
+  int prevPotVal = 0;
+  int prevLdrVal = 0;
+  while (1) 
   {
-    for (int i = 0; i < NUM_LEDS; i++ ) // Zorgt ervoor dat alle drie de leds branden, geregeld noor NUM_LEDS
+    unsigned int potValue = PotRead();
+    unsigned int LdrValue = LdrRead();
+    //Serial.println("lalala");
+
+    if (client.available())
+    { //Reads if server as sent WEMOS a data
+      char ch = static_cast<char>(client.read());
+      Serial.print("Server zegt: ");
+      Serial.println(ch);
+      if (ch == '1')
+      {
+        RegelLcdPanel();
+        delay(100);
+      }
+      if (ch == '2')
+      {
+        RegelVenster();
+        delay(100);
+      }
+      if (ch == '8')
+      {
+        brand = true;
+        RegelVenster();
+        RegelLcdPanel();
+        delay(100);
+      }
+      if (ch == '9')
+      {
+        brand = false;
+        RegelVenster();
+        RegelLcdPanel();
+        delay(100);
+      }
+      ch = '0';
+    }
+
+    if (potValue != prevPotVal && abs(potValue - prevPotVal) >= 20) // print alleen als verschil meer dan 20 is
+    { 
+      Serial.print("potwaarde: ");
+      Serial.println(prevPotVal);
+      client.print("vensterPot");
+      prevPotVal = potValue;
+    }
+    
+    if (LdrValue != prevLdrVal && abs(LdrValue - prevLdrVal) >= 200) // Als de LDR waarde verandert && Nieuwe waarde - oude waarde heeft een verschil van 300, zendt een bericht naar de Pi.
     {
-      leds[i] = CRGB(255, 0, 0); // Een array dat de kleur leest, op basis van de drie waardes die je meegeeft.
-      FastLED.setBrightness(6 * i); // Set de brigthness met een function.
-      FastLED.show(); 
+      Serial.print("LDR-waarde: ");
+      Serial.println(prevLdrVal);
+      client.print("vensterLDR");
+      prevLdrVal = LdrValue;
+    }
+    
+    if (!client.connected()) 
+    {
+      break;
+    }
+    if ((WiFi.status() != WL_CONNECTED)) 
+    {
+      Serial.println("Verbinding met WiFi verbroken");
+      setup();
     }
   }
-  else if (PotRead() > 300 && PotRead() <= 600)
-  {
-    for (int i = 0; i < NUM_LEDS; i++ )
-    {
-      leds[i] = CRGB(0, 255, 0);
-      FastLED.setBrightness(6 * i);
-      FastLED.show();
-    }
-  }
-  else if (PotRead() > 600)
-  {
-    for (int i = 0; i < NUM_LEDS; i++ )
-    {
-      leds[i] = CRGB(0, 0, 255);
-      FastLED.setBrightness(6 * i);
-      FastLED.show();
-    }
-  }*/
+}
 
-  for (int i = 0; i < NUM_LEDS; i++ ) // Deze for loop iss voor het regelen van de brightness, de CRGB combinatie staat nu op oranje
+void RegelLcdPanel() 
+{
+  if (!brand) 
+  {
+    for (int i = 0; i < NUM_LEDS; i++ ) // Deze for loop is voor het regelen van de brightness, de CRGB combinatie staat nu op oranje
     {
       leds[i] = CRGB(252, 120, 6);
       FastLED.setBrightness(( PotRead() / 50 ));
       FastLED.show();
     }
+  } 
+  if (brand) 
+  {
+    for (int i = 0; i < NUM_LEDS; i++ ) // Deze for loop is voor het regelen van de brightness, de CRGB combinatie staat nu op oranje
+    {
+      leds[i] = CRGB(255, 0, 0);
+      FastLED.setBrightness((50));
+      FastLED.show();
+    }
+  }
 }
 
-void ToggleVenster()
+unsigned int LdrRead()
 {
-  VensterOmhoog();  // Aangroepen maakt het vensterraam wit.
-  delay(1000);
-  VensterOmlaag();  // Aanroepen maakt het vensterraam zwart.
-  delay(1000);
+  Wire.requestFrom(0x36, 2);
+  unsigned int anin0 = Wire.read() & 0x03;
+  anin0 = anin0 << 8; // Volgens mij als die 8 verlaagt wordt krijg je lage output waardes.
+  anin0 = anin0 | Wire.read();
+  return anin0;
 }
 
+unsigned int PotRead()
+{
+  Wire.requestFrom(0x36, 4);
+  unsigned int anin1 = Wire.read() & 0x03;
+  anin1 = anin1 << 8;
+  anin1 = anin1 | Wire.read();
+  anin1 = Wire.read() & 0x03; // Door deze twee keer uit te lezen schrijf je de LDR over met de waarde van de potmeter.
+  anin1 = anin1 << 8;
+  anin1 = anin1 | Wire.read();
+  return anin1;
+}
+
+void wifiVerbinden() 
+{                     // verbinding maken met Accespoint van de Pi.
+  WiFi.mode(WIFI_STA);                     //
+  WiFi.begin(ssid, password);              // arduino library doet het moeilijke werk
+  while (WiFi.status() != WL_CONNECTED) {  // print . terwijl hij aan t verbinden is.
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("");
+  Serial.println("WiFi connected");
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
+}
+
+WiFiClient verbindenPi() 
+{  // verbinden met de pi
+  Serial.print("connecting to: ");
+  Serial.print(host);
+  Serial.print(" :");
+  Serial.println(port);
+
+  // Hiermee zet je de Wificlient class in TCP connectie modus.
+  WiFiClient client;  // client aanmaken
+  if (!client.connect(host, port)) {
+    Serial.println("connection failed");
+    delay(5000);
+  }
+  return client;
+}
+
+void RegelVenster()
+{
+  if (!brand) {
+    if (LdrRead() > 500)
+      VensterOmlaag();
+    else
+      VensterOmhoog();
+  } if (brand) {
+    VensterOmhoog();
+  }
+}
 void VensterOmlaag()
 {
   //Set PCA9554 outputs (IO44-IO7)
@@ -128,23 +206,28 @@ void VensterOmhoog()
   //Serial.println(outputs & 0x0F);
 }
 
-unsigned int LdrRead()
+void twiSetup(void) 
 {
-  Wire.requestFrom(0x36, 2);
-  unsigned int anin0 = Wire.read() & 0x03;
-  anin0 = anin0 << 8; // Volgens mij als die 8 verlaagt wordt krijg je lage output waardes.
-  anin0 = anin0 | Wire.read();
-  return anin0;
+  //Config PCA9554
+  //Inside loop for debugging purpose (hot plugging wemos module into i/o board).
+  //IO0-IO3 as input, IO4-IO7 as output.
+  Wire.beginTransmission(0x38);
+  Wire.write(byte(0x03));
+  Wire.write(byte(0x0F));
+  Wire.endTransmission();
+
+  //Config MAX11647
+  //Inside loop for debugging purpose (hot plugging wemos module into i/o board).
+  Wire.beginTransmission(0x36);
+  Wire.write(byte(0xA2));
+  Wire.write(byte(0x03));
+  Wire.endTransmission();
 }
 
-unsigned int PotRead()
+void ledSetup() 
 {
-  Wire.requestFrom(0x36, 4);
-  unsigned int anin1 = Wire.read() & 0x03;
-  anin1 = anin1 << 8;
-  anin1 = anin1 | Wire.read();
-  anin1 = Wire.read() & 0x03; // Door deze twee keer uit te lezen schrijf je de LDR over met de waarde van de potmeter.
-  anin1 = anin1 << 8;
-  anin1 = anin1 | Wire.read();
-  return anin1;
+  FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS); // Setup voor de LED strip.
+  FastLED.setMaxPowerInVoltsAndMilliamps(5, 500);
+  FastLED.clear();
+  FastLED.show();
 }
