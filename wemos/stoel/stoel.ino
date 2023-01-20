@@ -117,13 +117,12 @@ unsigned int inputs() {  //Function to read button value
 void loop() {
 
 
-  Client.print("setStoel");  // Dit bericht geeft aan welk meubel soort het is voor de server.
   WiFiClient client = verbindenPi();
   //Reset vibration outputs
   TrillenAan();
   delay(100);
   TrillenUit();
-
+  client.print("setStoel");  // Dit bericht geeft aan welk meubel soort het is voor de server.
   Serial.println("Initialisatie compleet");
 
 
