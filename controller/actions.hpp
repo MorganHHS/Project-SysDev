@@ -12,14 +12,13 @@ public:
     Venster(uint16_t fileDescriptor);
     void ldrRead(std::vector<std::string> *vals, uint16_t fd);
     void potRead(std::vector<std::string> *vals, uint16_t fd);
-    void vensterOmlaag(std::vector<std::string> *vals, uint16_t fd);
-    void vensterOmhoog(std::vector<std::string> *vals, uint16_t fd);
     void regelLcdPanel(std::vector<std::string> *vals, uint16_t fd);
     void regelVenster(std::vector<std::string> *vals, uint16_t fd);
 private:
     int fd;
     int ledVal;
     int potVal;
+    bool venster;
     Subscriber *subscriber;
 };
 
@@ -66,7 +65,7 @@ class Zuil {
 public:
     Zuil(uint16_t fileDescriptor);
     void deurBel(std::vector<std::string> *vals, uint16_t fd);
-    void brand(std::vector<std::string> *vals, uint16_t fd);
+    void zuilBrand(std::vector<std::string> *vals, uint16_t fd);
     void geenBrand(std::vector<std::string> *vals, uint16_t fd);
 private:
     int fd;

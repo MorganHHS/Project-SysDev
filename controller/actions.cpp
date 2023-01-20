@@ -20,7 +20,6 @@ Venster::Venster(uint16_t fileDescriptor) {
 Stoel::Stoel(uint16_t fileDescriptor) {
     fd = fileDescriptor;
     subscriber = new Subscriber;
-    currentApartment->stoel = this;
     currentApartment->brandP->subscribe(subscriber);
     currentApartment->geenBrandP->subscribe(subscriber);
 }
@@ -98,10 +97,6 @@ void Functions::venster(std::vector<std::string> *vals, uint16_t fd) {
         currentApartment->venster->ldrRead(vals, fd);
     } else if (strcmp(function.c_str(), "potRead")) {
         currentApartment->venster->potRead(vals, fd);
-    } else if (strcmp(function.c_str(), "vensterOmlaag")) {
-        currentApartment->venster->vensterOmlaag(vals, fd);
-    } else if (strcmp(function.c_str(), "vensterOmhoog")) {
-        currentApartment->venster->vensterOmhoog(vals, fd);
     } else if (strcmp(function.c_str(), "regelLcdPanel")) {
         currentApartment->venster->regelLcdPanel(vals, fd);
     } else if (strcmp(function.c_str(), "regelVenster")) {
@@ -135,9 +130,9 @@ void Functions::zuil(std::vector<std::string> *vals, uint16_t fd) {
     std::string function = vals->at(2);
     if (strcmp(function.c_str(), "deurBel")) {
         currentApartment->zuil->deurBel(vals, fd);
-    } else if (strcmp(function.c_str(), "deurDicht")) {
-        currentApartment->zuil->brand(vals, fd);
-    } else if(strcmp(function.c_str(), "brand")) {
+    } else if (strcmp(function.c_str(), "zuilBrand")) {
+        currentApartment->zuil->zuilBrand(vals, fd);
+    } else if(strcmp(function.c_str(), "geenBrand")) {
         currentApartment->zuil->geenBrand(vals, fd);
     }
 }
@@ -155,6 +150,21 @@ void Functions::schemerlamp(std::vector<std::string> *vals, uint16_t fd) {
     }
 }
 
+void Venster::ldrRead(std::vector<std::string> *vals, uint16_t fd) {
+    const char *message = "1";
+    send(fd, message, strlen(message), 0);
+}
+
+void Venster::regelLcdPanel(std::vector<std::string> *vals, uint16_t fd) {
+    const char *message = "1";
+    send(fd, message, strlen(message), 0);
+}
+
+void Venster::regelVenster(std::vector<std::string> *vals, uint16_t fd) {
+    const char *message = "2";
+    send(fd, message, strlen(message), 0);
+}
+
 void Deur::deurOpenBinnen(std::vector<std::string> *vals, uint16_t fd) {
     const char *message = "1";
     send(fd, message, strlen(message), 0);
@@ -167,5 +177,55 @@ void Deur::deurOpenBuiten(std::vector<std::string> *vals, uint16_t fd) {
 
 void Deur::brand(std::vector<std::string> *vals, uint16_t fd) {
     const char *message = "8";
+    send(fd, message, strlen(message), 0);
+}
+
+void Schemerlamp::ledOn(std::vector<std::string> *vals, uint16_t fd) {
+    const char *message = "1";
+    send(fd, message, strlen(message), 0);
+}
+
+void Schemerlamp::ledOff(std::vector<std::string> *vals, uint16_t fd) {
+    const char *message = "4";
+    send(fd, message, strlen(message), 0);
+}
+
+void Schemerlamp::brand(std::vector<std::string> *vals, uint16_t fd) {
+    const char *message = "2";
+    send(fd, message, strlen(message), 0);
+}
+
+void Schemerlamp::leesBeweging(std::vector<std::string> *vals, uint16_t fd) {
+    const char *message = "4";
+    send(fd, message, strlen(message), 0);
+}
+
+void Zuil::deurBel(std::vector<std::string> *vals, uint16_t fd) {
+    const char *message = "1";
+    send(fd, message, strlen(message), 0);
+}
+
+void Zuil::zuilBrand(std::vector<std::string> *vals, uint16_t fd) {
+    currentApartment->brandP->publish("8");
+    const char *message = "8";
+    send(fd, message, strlen(message), 0);
+}
+
+void Zuil::geenBrand(std::vector<std::string> *vals, uint16_t fd) {
+    currentApartment->brandP->publish("9");
+}
+
+void Stoel::trillenAan(std::vector<std::string> *vals, uint16_t fd) {
+    const char *message = "3";
+    send(fd, message, strlen(message), 0);
+}
+
+void Stoel::trillenUit(std::vector<std::string> *vals, uint16_t fd) {
+    const char *message = "4";
+    send(fd, message, strlen(message), 0);
+}
+
+void Stoel::ledAan(std::vector<std::string> *vals, uint16_t fd) {
+    const char *message = "1";
     send(fd, message, strlen(message), 0);
 }
