@@ -70,12 +70,12 @@ void loop() {
         deurOpenen(brand);
         Serial.println("Open deur");
       }
-      if (ch == '2') { // Pi stuurt dat er brand is
+      if (ch == '8') { // Pi stuurt dat er brand is
         brand = true;
         deurOpenen(brand);
         Serial.println("Brand!!");
       }
-      if (ch == '3') { // Pi stuurt dat de brand voorbij is.
+      if (ch == '9') { // Pi stuurt dat de brand voorbij is.
         brand = false;
         deurOpenen(brand);
         Serial.println("Geen brand!");
