@@ -21,6 +21,11 @@ int beginIndrukking = 0;
 int eindIndrukking = 0;
 int tijdIngedrukt = 0;
 bool hulp = false;
+unsigned int vorigeDruk = 0;
+unsigned int druk = 0;
+int beginGeenDruk = 0;
+int eindGeenDruk = 0;
+int tijdGeenDruk = 0;
 
 unsigned int inputs = 0;
 unsigned int outputs = 0;
@@ -75,6 +80,7 @@ void indrukTijd(WiFiClient* client){ //bepaald/berekend de tijd hoelang de knop 
     }
     laatsteStatusKnop = statusKnop;
 }
+
 void uitvoerenActie(WiFiClient* client){
   // Lezen wat de server verstuurd en juiste actie uitvoeren. 
       while (client->available()) {
@@ -106,11 +112,27 @@ void stuurAnaloog(WiFiClient* client){
   anin0=anin0<<8;
   anin0 = anin0|Wire.read();
   unsigned int analoog = anin0;
-  // Verstuurt een string naar de server.
-  Serial.println("data versturen naar raspberry pi");
-  if (client->connected()) {
-    client->print(analoog);
-    delay(100);
+  if (analoog != vorigeDruk && analoog - vorigeDruk >= abs(50)){
+     druk = analoog;
+      //Druk is te laag nadat de druk hoog was
+      if (druk < 400 && vorigeDruk >= 400) {
+         beginGeenDruk = millis();
+      }
+      //Druk is weer hoog nadat het laag was
+      else if(druk >= 400 && vorigeDruk < 400 && beginGeenDruk > 0) {
+        eindGeenDruk = millis();
+        tijdGeenDruk = eindGeenDruk - beginGeenDruk;
+        if (tijdGeenDruk >= 10000UL) {
+          // Verstuurt een string naar de server.
+          Serial.println("data versturen naar raspberry pi");
+          if (client->connected()) {
+              client->print("Mary is uit bed gevallen");
+              delay(100);
+          }
+        }
+        beginGeenDruk = 0;
+      }
+      vorigeDruk = druk;
     } 
 }
 void setup() 
@@ -144,6 +166,7 @@ void loop() {
   Serial.println(port);
   // Hiermee zet je de Wificlient class in TCP connectie modus.
   WiFiClient client;
+  client.print("bed");
   if (!client.connect(host, port)) {
     Serial.println("connection failed");
     delay(5000);
