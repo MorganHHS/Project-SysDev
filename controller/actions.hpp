@@ -28,6 +28,8 @@ public:
     void trillenAan(std::vector<std::string> *vals, uint16_t fd);
     void trillenUit(std::vector<std::string> *vals, uint16_t fd);
     void ledAan(std::vector<std::string> *vals, uint16_t fd);
+    void stoelTrilCyclus(std::vector<std::string> *vals, uint16_t fd);
+    void stoeKnopTril(std::vector<std::string> *vals, uint16_t fd);
 private:
     int fd;
     uint16_t inputs;

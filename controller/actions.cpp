@@ -112,6 +112,10 @@ void Functions::stoel(std::vector<std::string> *vals, uint16_t fd) {
         currentApartment->stoel->trillenUit(vals, fd);
     } else if(strcmp(function.c_str(), "ledAan")) {
         currentApartment->stoel->ledAan(vals, fd);
+    } else if(strcmp(function.c_str(), "stoelTrilCyclus")) {
+        currentApartment->stoel->stoelTrilCyclus(vals, fd);
+    } else if(strcmp(function.c_str(), "stoeKnopTril")) {
+        currentApartment->stoel->stoeKnopTril(vals, fd);
     } 
 }
 
@@ -227,5 +231,15 @@ void Stoel::trillenUit(std::vector<std::string> *vals, uint16_t fd) {
 
 void Stoel::ledAan(std::vector<std::string> *vals, uint16_t fd) {
     const char *message = "1";
+    send(fd, message, strlen(message), 0);
+}
+
+void Stoel::stoelTrilCyclus(std::vector<std::string> *vals, uint16_t fd) {
+    const char *message = "5";
+    send(fd, message, strlen(message), 0);
+}
+
+void Stoel::stoeKnopTril(std::vector<std::string> *vals, uint16_t fd) {
+    const char *message = "2";
     send(fd, message, strlen(message), 0);
 }
