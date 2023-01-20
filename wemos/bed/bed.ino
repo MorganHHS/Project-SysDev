@@ -85,13 +85,13 @@ void uitvoerenActie(WiFiClient* client){
   // Lezen wat de server verstuurd en juiste actie uitvoeren. 
       while (client->available()) {
         char ch = static_cast<char>(client->read());
-        if (ch == '7'){
+        if (ch == '7'){  //(ch == 'A'){
           lampAanzetten();
         }
-        if (ch == '8'){
+        if (ch == '8'){  //(ch == 'U'){
           lampUitzetten();
         }
-        if (ch == '9'){
+        if (ch == '9'){ //(ch == 'H'){
           hulp = !hulp;
         }
       }
@@ -105,8 +105,9 @@ unsigned int leesInputs() {
   unsigned int invoer = Wire.read(); 
   return invoer;  
 }
-void stuurAnaloog(WiFiClient* client){
-  //Read analog 10bit inputs 0&1
+void uitBedGevallen(WiFiClient* client){
+  //Leest de analoge waarde van de druksensor 
+  //En bepaald hoelang iemand niet op het bed heeft opgeligd als er iemand is op gaan liggen.
   Wire.requestFrom(0x36, 4);   
   unsigned int anin0 = Wire.read()&0x03;  
   anin0=anin0<<8;
@@ -114,11 +115,11 @@ void stuurAnaloog(WiFiClient* client){
   unsigned int analoog = anin0;
   if (analoog != vorigeDruk && analoog - vorigeDruk >= abs(50)){
      druk = analoog;
-      //Druk is te laag nadat de druk hoog was
+      //Druk is te laag nadat de druk hoog was.
       if (druk < 400 && vorigeDruk >= 400) {
          beginGeenDruk = millis();
       }
-      //Druk is weer hoog nadat het laag was
+      //Druk is weer hoog nadat het laag was als het ooit hoog geweest is.
       else if(druk >= 400 && vorigeDruk < 400 && beginGeenDruk > 0) {
         eindGeenDruk = millis();
         tijdGeenDruk = eindGeenDruk - beginGeenDruk;
@@ -166,7 +167,7 @@ void loop() {
   Serial.println(port);
   // Hiermee zet je de Wificlient class in TCP connectie modus.
   WiFiClient client;
-  client.print("bed");
+  client.print("setBed");
   if (!client.connect(host, port)) {
     Serial.println("connection failed");
     delay(5000);
@@ -174,7 +175,7 @@ void loop() {
   }
   while(1){
   inputs = leesInputs();
-  stuurAnaloog(&client);
+  uitBedGevallen(&client);
   notificatie(); 
   indrukTijd(&client);
   uitvoerenActie(&client);       
