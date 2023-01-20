@@ -155,17 +155,17 @@ void Functions::schemerlamp(std::vector<std::string> *vals, uint16_t fd) {
     }
 }
 
-void deurOpenBinnen(std::vector<std::string> *vals, uint16_t fd) {
+void Deur::deurOpenBinnen(std::vector<std::string> *vals, uint16_t fd) {
     const char *message = "1";
     send(fd, message, strlen(message), 0);
 }
 
-void deurOpenBuiten(std::vector<std::string> *vals, uint16_t fd) {
+void Deur::deurOpenBuiten(std::vector<std::string> *vals, uint16_t fd) {
     const char *message = "1";
     send(fd, message, strlen(message), 0);
 }
 
-void brand(std::vector<std::string> *vals, uint16_t fd) {
+void Deur::brand(std::vector<std::string> *vals, uint16_t fd) {
     const char *message = "8";
     send(fd, message, strlen(message), 0);
 }
