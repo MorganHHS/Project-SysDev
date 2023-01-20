@@ -32,7 +32,7 @@ public:
 
     void init();
     void shutdown();
-    void loop();
+    void checkSocket();
 
     void onConnect(void (*ncc)(uint16_t fd));
     void onInput(void (*rc)(uint16_t fd, char *buffer));

@@ -26,7 +26,7 @@ int main(int argc, char const *argv[])
     server.init();
     while(true)
     {
-        server.loop();
+        server.checkSocket();
     }
     return 0;
 }
