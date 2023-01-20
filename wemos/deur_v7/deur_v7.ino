@@ -53,10 +53,6 @@ void loop() {
         client.print("deur mary deurOpenBuiten");
         delay(300);
       }
-      if (knopjes == 3) {
-        client.print("deur mary ");
-        delay(300);
-      }
       knopjes = 0;
     }
 
