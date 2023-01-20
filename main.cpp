@@ -15,6 +15,11 @@ void addHandlers()
     Controller::addHandler("setZuil", Functions::setZuil);
     Controller::addHandler("setSchemerlamp", Functions::setSchemerlamp);
     Controller::addHandler("deur", Functions::deur);
+    Controller::addHandler("bed", Functions::bed);
+    Controller::addHandler("venster", Functions::venster);
+    Controller::addHandler("stoel", Functions::stoel);
+    Controller::addHandler("schemerlamp", Functions::schemerlamp);
+    Controller::addHandler("zuil", Functions::zuil);
 
 }
 int main(int argc, char const *argv[])
