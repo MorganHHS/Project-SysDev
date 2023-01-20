@@ -22,7 +22,7 @@ void Controller::handleServerDisconnect(uint16_t fd)
 
 void Controller::handleServerInput(uint16_t fd, char *buffer)
 {
-    std::cout << "Got input '" << buffer << "' from" << fd << std::endl;
+    std::cout << "Got input '" << buffer << "' from" << fd << ".\n";
     prs.parse(buffer);
 
     std::string key;
