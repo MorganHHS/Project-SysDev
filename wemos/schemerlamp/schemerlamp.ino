@@ -37,7 +37,7 @@ void setup() {
   ledOff();
   // Uncomment/edit one of the following lines for your leds arrangement.
 
-  FastLED.addLeds<WS2812B, DATA_PIN, RGB>(leds, NUM_LEDS);
+  FastLED.addLeds<WS2812B, DATA_PIN, RGB>(leds, NUM_LEDS); // Gebruik maken van de library FastLED, uitlezen hoeveel leds we gebruiken.
 }
 
 
@@ -46,23 +46,17 @@ void loop(void) {
   WiFiClient client = verbindenPi();
   brand =false;
 
-  /*ledOn();  // Roept de functie led on aan, hierin word de led aan gezet.
-  delay(500);
-  ledOff();  // Roept de functie led off aan, hierin word de led uit gezet.
-  delay(500);*/
+
   int vorigeBeweging = 0;
   while (1) {
     
     int beweging = leesBeweging();  // LeesBeweging() checkt of er beweging plaats vindt bij de bewegingssensor
 
-    //delay(500);
     if (beweging != vorigeBeweging) {
       if (beweging == 1) {
         Serial.print("Beweging: ");
-        Serial.println(beweging);
+        Serial.println(beweging); // print de waarde in de seriele monitor
         client.print("lampBeweging");
-        //ledOn();
-        //delay(5000);
       }      
     }
   vorigeBeweging = beweging;    
@@ -76,18 +70,16 @@ void loop(void) {
       if (ch == '1') {
         ledOn();
       }
-      if (ch == '2') {
-        brand = true;
+      if (ch == '8') {
+        brand = true; // Pi heeft 8 gestuurd, er is brand.
         ledOn();
       }
-      if (ch == '3'){
-        brand = false;
+      if (ch == '9'){
+        brand = false; // Pi heeft 9 gestuurd, er is dus geen brand.
         ledOn();
       }
       ch = '0';
     }
-    //ledOff();
-    //delay(500);
 
     if (!client.connected()) {
       Serial.println("Verbinding met server verbroken");
@@ -101,7 +93,6 @@ void loop(void) {
 }
 
 void ledOn() {
-  //Serial.println("led aan");
   leds[0] = CRGB::Red;  // Hiermee zetten we het ledje op een bepaalde kleur
   FastLED.show();       // Hiermee wordt de led gezegd te laten zien wat er zojuist is ingesteld. Hij gaat in dit geval dus aan
   for (int i = 0; i < 1000; i++) {
