@@ -12,14 +12,14 @@ Apartment *currentApartment = &mary;
 
 Venster::Venster(uint16_t fileDescriptor) {
     fd = fileDescriptor;
-    subscriber = new Subscriber;
+    subscriber = new Subscriber(fd);
     currentApartment->brandP->subscribe(subscriber);
     currentApartment->geenBrandP->subscribe(subscriber);
 }
 
 Stoel::Stoel(uint16_t fileDescriptor) {
     fd = fileDescriptor;
-    subscriber = new Subscriber;
+    subscriber = new Subscriber(fd);
     currentApartment->brandP->subscribe(subscriber);
     currentApartment->geenBrandP->subscribe(subscriber);
 }
@@ -27,26 +27,26 @@ Stoel::Stoel(uint16_t fileDescriptor) {
 Bed::Bed(uint16_t fileDescriptor) { 
 
     fd = fileDescriptor;
-    subscriber = new Subscriber;
+    subscriber = new Subscriber(fd);
     currentApartment->brandP->subscribe(subscriber);
     currentApartment->geenBrandP->subscribe(subscriber);
 }
 
 Deur::Deur(uint16_t fileDescriptor) {
     fd = fileDescriptor;
-    subscriber = new Subscriber;
+    subscriber = new Subscriber(fd);
     currentApartment->brandP->subscribe(subscriber);
     currentApartment->geenBrandP->subscribe(subscriber);
 }
 
 Zuil::Zuil(uint16_t fileDescriptor) {
     fd = fileDescriptor;
-    subscriber = new Subscriber;
+    subscriber = new Subscriber(fd);
 }
 
 Schemerlamp::Schemerlamp(uint16_t fileDescriptor) {
     fd = fileDescriptor;
-    subscriber = new Subscriber;
+    subscriber = new Subscriber(fd);
     currentApartment->brandP->subscribe(subscriber);
     currentApartment->geenBrandP->subscribe(subscriber);
 }
