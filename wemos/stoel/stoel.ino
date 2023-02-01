@@ -146,35 +146,39 @@ void loop() {
     if ((DrukSensor() > 400)) {  //Start vibration cycle if reasonable force is exerted on force sensor
       if (client.connected()) {  //
         Serial.println("Patient is sitting");
-        client.print("stoelTrilCyclus");
+        client.print("stoel mary stoelTrilCyclus");
+        delay(700);
         while (!client.available()) {}  //Wait for reaction server
         while (client.available()) {
           char ch = static_cast<char>(client.read());
           if (ch == '5') {
             while (DrukSensor() > 400) {
               TrilCyclus();
+              ch = '0';
             }
             TrillenUit();
             Serial.println("Patient stood up");
+            ch = '0';
           }
         }
       }
     }
 
-    if ((inputs()) > 0) {  //Start vibrating if button is pressed
+    if ((inputs()) == 1) {  //Start vibrating if button is pressed
       // Verstuurt een string naar de server.
       if (client.connected()) {
         Serial.println("Button is pressed");
-        client.print("stoelKnopTril");
-        delay(100);
-
+        client.print("stoel mary stoelKnopTril");
+        delay(700);
         // Lezen wat de server verstuurd en printen.
         while (client.available()) {
           char ch = static_cast<char>(client.read());
           if (ch == '2') {
             while ((inputs()) > 0) {
               KnopTril();
+              ch = '0';
             }
+            ch = '0';
           }
         }
       }
@@ -189,25 +193,38 @@ void loop() {
       if (ch == '1') {
         LedAan();
         Serial.println("Vibrating");
+        delay(3000);
+        ch = '0';
       }
       if (ch == '2') {
         KnopTril();
         Serial.println("Stop Vibrating");
+        delay(3000);
+        ch = '0';
+        
       }
       if (ch == '3') {
         TrillenAan();
         Serial.println("Turn Led on");
+        delay(3000);
+        ch = '0';
       }
       if (ch == '4') {
         TrillenUit();
         Serial.println("Turn Led on");
+        delay(3000);
+        ch = '0';
       }
       if (ch == '5') {
         TrilCyclus();
         Serial.println("Turn Led on");
+        delay(3000);
+        ch = '0';
       }
       ch = '0';
+      
     }
+    
     if ((WiFi.status() != WL_CONNECTED)) {    // als de client wifi verbinding verliest
       Serial.println("WiFI verbinding verbroken");
       setup();
