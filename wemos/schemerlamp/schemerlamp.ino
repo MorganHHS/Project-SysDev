@@ -25,7 +25,7 @@ const uint16_t port = 8080;        // Socket Port number
 void ledOn();        // Led aan
 void ledOff();       //Led uit
 int leesBeweging();  // Deze functie zal letten op beweging.
-bool brand;
+volatile bool brand;
 
 // Define the array of leds
 CRGB leds[NUM_LEDS];
@@ -45,18 +45,18 @@ void setup() {
 void loop(void) {
   WiFiClient client = verbindenPi();
   brand =false;
-
+  client.print("setSchemerlamp");
 
   int vorigeBeweging = 0;
   while (1) {
     
     int beweging = leesBeweging();  // LeesBeweging() checkt of er beweging plaats vindt bij de bewegingssensor
-
+    Serial.print(beweging);
     if (beweging != vorigeBeweging) {
       if (beweging == 1) {
         Serial.print("Beweging: ");
         Serial.println(beweging); // print de waarde in de seriele monitor
-        client.print("lampBeweging");
+        client.print("schemerlamp mary leesBeweging");
       }      
     }
   vorigeBeweging = beweging;    
@@ -67,7 +67,7 @@ void loop(void) {
       Serial.print("pi zegt:");
       Serial.print(ch);
       Serial.print("\n");
-      if (ch == '1') {
+      if (ch == '4') {
         ledOn();
       }
       if (ch == '8') {
@@ -99,13 +99,14 @@ void ledOn() {
     int beweging = leesBeweging();
     if (beweging == 1) {
       delay(1000);
-      //Serial.println(i);      
+      Serial.println(i);      
       ledOn();
       //delay(1000);
     }
     delay(10);
   }
   if (!brand){
+    Serial.println("ledje uit plis" );  
     ledOff();
   }
   
