@@ -29,7 +29,7 @@ public:
     void trillenUit(std::vector<std::string> *vals, uint16_t fd);
     void ledAan(std::vector<std::string> *vals, uint16_t fd);
     void stoelTrilCyclus(std::vector<std::string> *vals, uint16_t fd);
-    void stoeKnopTril(std::vector<std::string> *vals, uint16_t fd);
+    void stoelKnopTril(std::vector<std::string> *vals, uint16_t fd);
 private:
     int fd;
     uint16_t inputs;
@@ -98,6 +98,8 @@ public:
     Schemerlamp *schemerlamp;
     Publisher *brandP;
     Publisher *geenBrandP;
+    Publisher *deurbelP;
+    Publisher *patientHulpP;
 };
 
 namespace Functions{
