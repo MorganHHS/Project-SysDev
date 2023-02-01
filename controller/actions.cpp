@@ -169,6 +169,11 @@ void Venster::regelVenster(std::vector<std::string> *vals, uint16_t fd) {
     send(fd, message, strlen(message), 0);
 }
 
+void Venster::potRead(std::vector<std::string> *vals, uint16_t fd) {
+    const char *message = "2";
+    send(fd, message, strlen(message), 0);
+}
+
 void Deur::deurOpenBinnen(std::vector<std::string> *vals, uint16_t fd) {
     const char *message = "1";
     send(fd, message, strlen(message), 0);
@@ -240,6 +245,21 @@ void Stoel::stoelTrilCyclus(std::vector<std::string> *vals, uint16_t fd) {
 }
 
 void Stoel::stoeKnopTril(std::vector<std::string> *vals, uint16_t fd) {
+    const char *message = "2";
+    send(fd, message, strlen(message), 0);
+}
+
+void Bed::regelLed(std::vector<std::string> *vals, uint16_t fd) {
+    const char *message = "2";
+    send(fd, message, strlen(message), 0);
+}
+
+void Bed::hulpNodig(std::vector<std::string> *vals, uint16_t fd) {
+    const char *message = "2";
+    send(fd, message, strlen(message), 0);
+}
+
+void Bed::afwezigheidBed(std::vector<std::string> *vals, uint16_t fd) {
     const char *message = "2";
     send(fd, message, strlen(message), 0);
 }
