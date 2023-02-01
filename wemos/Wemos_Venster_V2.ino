@@ -4,13 +4,16 @@
 #include <FastLED.h>
 
 #ifndef WIFISSID
-#define WIFISSID "Lab001"         //SSID of the WIFI Accesspoint
-#define WIFIPASS "Lab001WiFi"  //Password of the WIFI Accesspoint
+//#define WIFISSID "Lab001"         //SSID of the WIFI Accesspoint
+//#define WIFIPASS "Lab001WiFi"  //Password of the WIFI Accesspoint
+#define WIFISSID "banaantje"         //SSID of the WIFI Accesspoint
+#define WIFIPASS "BananenZijnGoed!"  //Password of the WIFI Accesspoint
 #endif
 
 const char* ssid = WIFISSID;
 const char* password = WIFIPASS;
-const char* host = "145.52.126.232";  //Server Host IP
+//const char* host = "145.52.126.232";  //Server Host IP
+const char* host = "192.168.4.1";
 const uint16_t port = 8080;        // Socket Port number
 
 #define LED_PIN D5 // Defines voor de LED strip.
@@ -34,6 +37,7 @@ void loop()
   WiFiClient client = verbindenPi();
   int prevPotVal = 0;
   int prevLdrVal = 0;
+  client.print("setVenster");
   while (1) 
   {
     unsigned int potValue = PotRead();
@@ -69,29 +73,31 @@ void loop()
         RegelLcdPanel();
         delay(100);
       }
-      ch = '0';
+      ch = '0'; 
     }
 
-    if (potValue != prevPotVal && abs(potValue - prevPotVal) >= 20) // print alleen als verschil meer dan 20 is
+    if (potValue != prevPotVal && abs(potValue - prevPotVal) >= 30) // print alleen als verschil meer dan 20 is
     { 
       Serial.print("potwaarde: ");
       Serial.println(prevPotVal);
-      client.print("vensterPot");
+      //client.print("venster mary vensterPot");
       prevPotVal = potValue;
+      RegelLcdPanel();
     }
     
     if (LdrValue != prevLdrVal && abs(LdrValue - prevLdrVal) >= 200) // Als de LDR waarde verandert && Nieuwe waarde - oude waarde heeft een verschil van 300, zendt een bericht naar de Pi.
     {
       Serial.print("LDR-waarde: ");
       Serial.println(prevLdrVal);
-      client.print("vensterLDR");
+      client.print("venster mary vensterLDR");
       prevLdrVal = LdrValue;
+      RegelVenster();
     }
     
     if (!client.connected()) 
     {
       break;
-    }
+    } 
     if ((WiFi.status() != WL_CONNECTED)) 
     {
       Serial.println("Verbinding met WiFi verbroken");
