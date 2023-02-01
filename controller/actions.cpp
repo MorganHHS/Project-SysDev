@@ -86,50 +86,50 @@ void Functions::setSchemerlamp(std::vector<std::string> *vals, uint16_t fd) {
 
 void Functions::bed(std::vector<std::string> *vals, uint16_t fd) {
     std::string function = vals->at(2);
-    if (strcmp(function.c_str(), "regelLed")==0) {
+    if (strcmp(function.c_str(), "regelLed") == 0) {
         currentApartment->bed->regelLed(vals, fd);
-    } else if (strcmp(function.c_str(), "hulpNodig")==0) {
+    } else if (strcmp(function.c_str(), "hulpNodig") == 0) {
         currentApartment->bed->hulpNodig(vals, fd);
-    } else if(strcmp(function.c_str(), "afwezigheidBed")==0) {
+    } else if(strcmp(function.c_str(), "afwezigheidBed") == 0) {
         currentApartment->bed->afwezigheidBed(vals, fd);
     } 
 }
 
 void Functions::venster(std::vector<std::string> *vals, uint16_t fd) {
     std::string function = vals->at(2);
-    if (strcmp(function.c_str(), "ldrRead")==0) {
+    if (strcmp(function.c_str(), "ldrRead") == 0) {
         currentApartment->venster->ldrRead(vals, fd);
-    } else if (strcmp(function.c_str(), "potRead")==0) {
+    } else if (strcmp(function.c_str(), "potRead") == 0) {
         currentApartment->venster->potRead(vals, fd);
-    } else if (strcmp(function.c_str(), "regelLcdPanel")==0) {
+    } else if (strcmp(function.c_str(), "regelLcdPanel") == 0) {
         currentApartment->venster->regelLcdPanel(vals, fd);
-    } else if (strcmp(function.c_str(), "regelVenster")==0) {
+    } else if (strcmp(function.c_str(), "regelVenster") == 0) {
         currentApartment->venster->regelVenster(vals, fd);
     } 
 }
 
 void Functions::stoel(std::vector<std::string> *vals, uint16_t fd) {
     std::string function = vals->at(2);
-    if (strcmp(function.c_str(), "trillenAan")==0) {
+    if (strcmp(function.c_str(), "trillenAan") == 0) {
         currentApartment->stoel->trillenAan(vals, fd);
-    } else if (strcmp(function.c_str(), "trillenUit")==0) {
+    } else if (strcmp(function.c_str(), "trillenUit") == 0) {
         currentApartment->stoel->trillenUit(vals, fd);
-    } else if(strcmp(function.c_str(), "ledAan")==0) {
+    } else if(strcmp(function.c_str(), "ledAan") == 0) {
         currentApartment->stoel->ledAan(vals, fd);
-    } else if(strcmp(function.c_str(), "stoelTrilCyclus")==0) {
+    } else if(strcmp(function.c_str(), "stoelTrilCyclus") == 0) {
         currentApartment->stoel->stoelTrilCyclus(vals, fd);
-    } else if(strcmp(function.c_str(), "stoelKnopTril")==0) {
+    } else if(strcmp(function.c_str(), "stoelKnopTril") == 0) {
         currentApartment->stoel->stoelKnopTril(vals, fd);
     } 
 }
 
 void Functions::deur(std::vector<std::string> *vals, uint16_t fd) {
     std::string function = vals->at(2);
-    if (strcmp(function.c_str(), "deurOpenBinnen")==0) {
+    if (strcmp(function.c_str(), "deurOpenBinnen") == 0) {
         currentApartment->deur->deurOpenBinnen(vals, fd);
-    } else if (strcmp(function.c_str(), "deurOpenBuiten")==0) {
+    } else if (strcmp(function.c_str(), "deurOpenBuiten") == 0) {
         currentApartment->deur->deurOpenBuiten(vals, fd);
-    } else if(strcmp(function.c_str(), "brand")==0) {
+    } else if(strcmp(function.c_str(), "brand") == 0) {
         currentApartment->deur->brand(vals, fd);
     }
 }
@@ -148,111 +148,21 @@ void Functions::zuil(std::vector<std::string> *vals, uint16_t fd) {
 
 void Functions::schemerlamp(std::vector<std::string> *vals, uint16_t fd) {
     std::string function = vals->at(2);
-    if (strcmp(function.c_str(), "ledOn")==0) {
+    if (strcmp(function.c_str(), "ledOn") == 0) {
         currentApartment->schemerlamp->ledOn(vals, fd);
-    } else if (strcmp(function.c_str(), "ledOff")==0) {
+    } else if (strcmp(function.c_str(), "ledOff") == 0) {
         currentApartment->schemerlamp->ledOff(vals, fd);
-    } else if(strcmp(function.c_str(), "brand")==0) {
+    } else if(strcmp(function.c_str(), "brand") == 0) {
         currentApartment->schemerlamp->brand(vals, fd);
-    } else if(strcmp(function.c_str(), "leesBeweging")==0) {
+    } else if(strcmp(function.c_str(), "leesBeweging") == 0) {
         currentApartment->schemerlamp->leesBeweging(vals, fd);
     }
-}
-
-void Venster::ldrRead(std::vector<std::string> *vals, uint16_t fd) {
-    const char *message = "1";
-    send(fd, message, strlen(message), 0);
-}
-
-void Venster::regelLcdPanel(std::vector<std::string> *vals, uint16_t fd) {
-    const char *message = "1";
-    send(fd, message, strlen(message), 0);
-}
-
-void Venster::regelVenster(std::vector<std::string> *vals, uint16_t fd) {
-    const char *message = "2";
-    send(fd, message, strlen(message), 0);
-}
-
-void Venster::potRead(std::vector<std::string> *vals, uint16_t fd) {
-    const char *message = "2";
-    send(fd, message, strlen(message), 0);
-}
-
-void Deur::deurOpenBinnen(std::vector<std::string> *vals, uint16_t fd) {
-    const char *message = "1";
-    send(fd, message, strlen(message), 0);
-}
-
-void Deur::deurOpenBuiten(std::vector<std::string> *vals, uint16_t fd) {
-    currentApartment->deurbelP->publish("1");
-    const char *message = "1";
-    send(fd, message, strlen(message), 0);
-}
-
-void Deur::brand(std::vector<std::string> *vals, uint16_t fd) {
-    const char *message = "8";
-    send(fd, message, strlen(message), 0);
-}
-
-void Schemerlamp::ledOn(std::vector<std::string> *vals, uint16_t fd) {
-    const char *message = "1";
-    send(fd, message, strlen(message), 0);
-}
-
-void Schemerlamp::ledOff(std::vector<std::string> *vals, uint16_t fd) {
-    const char *message = "2";
-    send(fd, message, strlen(message), 0);
-}
-
-void Schemerlamp::brand(std::vector<std::string> *vals, uint16_t fd) {
-    const char *message = "8";
-    send(fd, message, strlen(message), 0);
-}
-
-void Schemerlamp::leesBeweging(std::vector<std::string> *vals, uint16_t fd) {
-    const char *message = "4";
-    send(fd, message, strlen(message), 0);
-}
-
-void Zuil::deurBel(std::vector<std::string> *vals, uint16_t fd) {
-    const char *message = "1";
-    send(fd, message, strlen(message), 0);
 }
 
 void Zuil::zuilBrand(std::vector<std::string> *vals, uint16_t fd) {
     currentApartment->brandP->publish("8");
     const char *message = "8";
     send(this->fd, message, strlen(message), 0);
-}
-
-void Zuil::geenBrand(std::vector<std::string> *vals, uint16_t fd) {
-    currentApartment->brandP->publish("9");
-}
-
-void Stoel::trillenAan(std::vector<std::string> *vals, uint16_t fd) {
-    const char *message = "3"; //3
-    send(fd, message, strlen(message), 0);
-}
-
-void Stoel::trillenUit(std::vector<std::string> *vals, uint16_t fd) {
-    const char *message = "4";
-    send(fd, message, strlen(message), 0);
-}
-
-void Stoel::ledAan(std::vector<std::string> *vals, uint16_t fd) {
-    const char *message = "1";
-    send(fd, message, strlen(message), 0);
-}
-
-void Stoel::stoelTrilCyclus(std::vector<std::string> *vals, uint16_t fd) {
-    const char *message = "5";
-    send(fd, message, strlen(message), 0);
-}
-
-void Stoel::stoelKnopTril(std::vector<std::string> *vals, uint16_t fd) {
-    const char *message = "2";
-    send(fd, message, strlen(message), 0);
 }
 
 void Bed::regelLed(std::vector<std::string> *vals, uint16_t fd) {
@@ -279,4 +189,8 @@ void Bed::hulpNodig(std::vector<std::string> *vals, uint16_t fd) {
 
 void Bed::afwezigheidBed(std::vector<std::string> *vals, uint16_t fd) {
     std::cout << "Mary is uit bed gevallen"  << std::endl;
+}
+
+void Functions::sendMessage(uint16_t fd, const char* message) {
+    send(fd, message, strlen(message), 0);
 }
